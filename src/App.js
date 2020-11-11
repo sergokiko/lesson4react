@@ -1,25 +1,57 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import {Route} from "react-router";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+import './App.css';
+import {Main} from "./components/main";
+import Users from "./components/users/users";
+import Posts from "./components/posts/posts";
+
+import Header from "./components/header";
+import UserPosts from "./components/users/user-posts";
+import Comments from "./components/comments/comments";
+import PostComments from "./components/posts/post-comments";
+import {ErrorPage} from "./components/errorpage";
+
+
+class App extends React.Component {
+    state = {
+        authorization: false
+    }
+
+    authorizationFunc = () => {
+        this.setState({authorization: !this.state.authorization})
+        console.log('clicked')
+    }
+
+    render() {
+        return (
+            <div>
+                <Header log={this.state.authorization} autorization={this.authorizationFunc}/>
+                <div className='container'>
+                    <Route path='/' exact component={Main}/>
+
+                    {
+                        this.state.authorization && (
+                            <>
+                                <Route path='/users/posts/:id/comments' exact component={PostComments}/>
+                                <Route path='/users/posts/:id' exact component={UserPosts}/>
+                                <Route path='/users' exact component={Users}/>
+                                <Route path='/posts' exact component={Posts}/>
+                                <Route path='/comments' exact component={Comments}/>
+                            </>
+                        )
+                    }
+                    <Route render={()=> <ErrorPage/>}/>
+
+
+                </div>
+
+            </div>
+        );
+    }
+
+
 }
 
 export default App;
