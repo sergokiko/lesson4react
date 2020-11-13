@@ -1,5 +1,5 @@
 import React from "react";
-import {Route} from "react-router";
+import {Route, Switch} from "react-router";
 
 
 import './App.css';
@@ -21,7 +21,7 @@ class App extends React.Component {
 
     authorizationFunc = () => {
         this.setState({authorization: !this.state.authorization})
-        console.log('clicked')
+
     }
 
     render() {
@@ -29,21 +29,25 @@ class App extends React.Component {
             <div>
                 <Header log={this.state.authorization} autorization={this.authorizationFunc}/>
                 <div className='container'>
-                    <Route path='/' exact component={Main}/>
-
+                    <Switch>
+                        <Route path='/' exact component={Main}/>
                     {
-                        this.state.authorization && (
-                            <>
-                                <Route path='/users/posts/:id/comments' exact component={PostComments}/>
-                                <Route path='/users/posts/:id' exact component={UserPosts}/>
-                                <Route path='/users' exact component={Users}/>
-                                <Route path='/posts' exact component={Posts}/>
-                                <Route path='/comments' exact component={Comments}/>
-                            </>
+                        this.state.authorization &&(
+                            <Switch>
+                                <Route path='/users/posts/:id/comments' component={PostComments}/>
+                                <Route path='/users/posts/:id'  component={UserPosts}/>
+                                <Route path='/posts/:id/comments'  component={PostComments}/>
+                                <Route path='/users'  component={Users}/>
+                                <Route path='/posts'  component={Posts}/>
+                                <Route path='/comments'  component={Comments}/>
+                                <Route path='/' exact component={Main}/>
+                            </Switch>
                         )
                     }
-                    <Route render={()=> <ErrorPage/>}/>
 
+                        <Route render={()=> <ErrorPage/>}/>
+
+                    </Switch>
 
                 </div>
 

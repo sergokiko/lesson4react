@@ -1,25 +1,40 @@
-import React, {Component} from 'react';
 
-class Comments extends Component {
-    componentDidMount() {
-        // const userId = this.props.match.params
-        // console.log(userId);
+import React from 'react'
 
-        // fetch(`https://jsonplaceholder.typicode.com/posts?userId=` + userId)
-        //     .then(resp => resp.json())
-        //     .then(userPosts => {
-        //             this.setState({userPosts})
-        //         }
-        //     )
+import {useEffect, useState} from 'react'
+import CommentsService from "../../services/CommentsService";
 
-    }
-    render() {
-        return (
-            <div>
-                comments
-            </div>
-        );
-    }
+const Comments = () => {
+
+    let commentsApi = new CommentsService();
+    let [comments, setComments] = useState([]);
+
+    useEffect(() => {
+        let isSubscribed = true
+        commentsApi.getComments().then(value => {
+            if(isSubscribed){
+            setComments(value)
+            }}
+        )
+        return () => isSubscribed = false
+    } )
+
+    return (
+        <div>
+            {
+                comments.map(comment => {
+                    return (
+                        <div className='card' key={comment.id}>
+                            <h1>name: {comment.name}</h1>
+                            <p>email: {comment.email}</p>
+                            <p>body: {comment.body}</p>
+                        </div>
+                    )
+                })
+            }
+        </div>
+    );
+
 }
 
 export default Comments;

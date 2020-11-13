@@ -1,24 +1,29 @@
-import React, {Component} from 'react';
+import React, {useState, useEffect} from 'react';
+import {withRouter} from "react-router";
+import PostService from "../../services/post-service";
 
-class PostComments extends Component {
-    state = {
-        comments: []
-    }
-    componentDidMount() {
-       const postID = this.props.match.params.id
-        fetch(`https://jsonplaceholder.typicode.com/comments?postId=` + postID)
-            .then(resp => resp.json())
-            .then(comments => {
-                this.setState({comments})
-                }
-            )
-    }
+const PostComments = props =>{
+   let [comments, setComments] = useState([])
 
-    render() {
+   const postApi = new PostService()
+    useEffect(() => {
+        const postID = props.match.params.id;
+        let isSubscribed = true
+        postApi.getPostComments(postID).then(res => {
+            if(isSubscribed){
+                setComments(res)
+            }
+        })
+        return () => isSubscribed = false
+    })
+
+
+
+
         return (
             <div>
                 {
-                    this.state.comments.map(comment => {
+                    comments.map(comment => {
                         return (
                             <div className='card' key={comment.id}>
                                 <h1>name: {comment.name}</h1>
@@ -30,7 +35,7 @@ class PostComments extends Component {
                 }
             </div>
         );
-    }
+
 }
 
-export default PostComments;
+export default withRouter(PostComments) ;

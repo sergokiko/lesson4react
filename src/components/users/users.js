@@ -1,26 +1,25 @@
-import React, {Component} from 'react';
+import React, {useEffect, useState} from 'react';
 import User from "./user";
+import UserService from "../../services/user-service";
 
-class Users extends Component {
+const Users = () => {
+   const usersApi = new UserService();
 
-    state = {
-        users:[]
-    }
-    componentDidMount() {
-        fetch('https://jsonplaceholder.typicode.com/users/')
-            .then(response => response.json()
-                .then(users => this.setState({users})))
-    }
+  let [users, setUsers] = useState([])
 
-    render() {
+    useEffect (() => {
+        usersApi.getUsers().then(users => setUsers(users))
+    })
+
+
         return (
             <div>
                 {
-                    this.state.users.map(user => <User key={user.id} user={user}/>)
+                    users.map(user => <User key={user.id} user={user}/>)
                 }
             </div>
         );
-    }
+
 }
 
 export default Users;
